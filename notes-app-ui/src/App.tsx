@@ -5,11 +5,11 @@ const App = () => {
         <div className="app-container">
             <form className="note-form">
                 <input
-                    placeholder="title"
+                    placeholder="Title"
                     required
                 ></input>
                 <textarea
-                    placeholder="Content"
+                    placeholder="content"
                     rows={10}
                     required
                 ></textarea>
@@ -18,7 +18,7 @@ const App = () => {
                 </button>
             </form>
             <div className="notes-grid">
-                <div className="note_item">
+                <div className="note-item">
                     <div className="notes-header">
                         <button>x</button>
                     </div>
