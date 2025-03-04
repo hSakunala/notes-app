@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css"
+import { eventNames } from "process";
 
 type Note = {
     id: number,
@@ -41,7 +42,8 @@ const App = () => {
         setSelectedNote(note);
         setTitle(note.title);
         setContent(note.content);
-    }
+    };
+
 
     const handleAddNote = (event: React.FormEvent) => {
         event.preventDefault();
@@ -56,6 +58,7 @@ const App = () => {
         setTitle("");
         setContent("");
     };
+
 
     const handleUpdateNote = (event: React.FormEvent) => {
         event.preventDefault();
@@ -85,11 +88,29 @@ const App = () => {
         setSelectedNote(null);
     };
 
+
     const handleCancel = () => {
         setTitle("")
         setContent("")
         setSelectedNote(null);
     };
+
+    // function takes in the event(click the x button) and noteID
+    const deleteNote = (
+        event: React.MouseEvent,
+        noteId: number
+    ) => {
+        // this stopPropagation stops the onClick event in notes item
+        event.stopPropagation();
+
+        // returns all the notes except the one selected for deletion
+        const updatedNotes = notes.filter(
+            (note) => note.id !== noteId
+        )
+
+        setNotes(updatedNotes);
+    };
+
 
     return (
         <div className="app-container">
@@ -136,7 +157,13 @@ const App = () => {
                         onClick={() => handleNoteClick(note)}
                     >
                         <div className="notes-header">
-                            <button>x</button>
+                            <button
+                                onClick={(event) =>
+                                    deleteNote(event, note.id)
+                                }
+                            >
+                                x
+                            </button>
                         </div>
                         <h2>{note.title}</h2>
                         <p>{note.content}</p>
