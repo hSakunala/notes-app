@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css"
 import { eventNames } from "process";
+import { json } from "stream/consumers";
 
 type Note = {
     id: number,
@@ -43,18 +44,38 @@ const App = () => {
     };
 
 
-    const handleAddNote = (event: React.FormEvent) => {
+    const handleAddNote = async (
+        event: React.FormEvent
+    ) => {
         event.preventDefault();
 
-        const newNote: Note = {
-            id: notes.length + 1,
-            title: title,
-            content: content
+        // fetch data and use post to add new note to db
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/notes",
+                {
+                    method: "POST",
+                    headers: {   // have to specify the data we are sending is 
+                        // json through header content type
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content
+                    })
+                }
+            );
+
+            const newNote = await response.json();
+
+            setNotes([newNote, ...notes]);
+            setTitle("");
+            setContent("");
+        } catch (e) {
+            console.log(e);
         };
 
-        setNotes([newNote, ...notes]);
-        setTitle("");
-        setContent("");
+
     };
 
 
