@@ -5,10 +5,10 @@ import { PrismaClient } from "@prisma/client";
 // create new express app
 const app = express();
 
-// create new prisma client that was genderated from pushing db to supabase
+// create new prisma client that was generated from pushing db to supabase
 const prisma = new PrismaClient();
 
-// parse the body of api request to json
+// the app will parse all bodies of future api requests to json
 app.use(express.json());
 app.use(cors());
 
