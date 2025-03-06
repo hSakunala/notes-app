@@ -85,6 +85,30 @@ app.put("/api/notes/:id", async (req, res) => {
     }
 });
 
+// api endpoint to delete notes, taking in the id as a param
+app.delete("/api/notes/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    // check if id is valid
+    if (!id || isNaN(id)) {
+        res
+            .status(400)
+            .send("ID must be a valid integer");
+        return;
+    };
+
+    try {
+        await prisma.note.delete({
+            where: { id }
+        });
+        res.status(204).send(); // respond with success code
+    } catch (error) {
+        res
+            .status(500)
+            .send("Oops, something went wrong")
+    }
+})
+
 app.listen(5000, () => {
     console.log("server running on localhost:5000")
 });
