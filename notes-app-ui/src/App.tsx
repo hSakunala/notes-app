@@ -133,19 +133,33 @@ const App = () => {
     };
 
     // function takes in the event(click the x button) and noteID
-    const deleteNote = (
+    const deleteNote = async (
         event: React.MouseEvent,
         noteId: number
     ) => {
         // this stopPropagation stops the onClick event in notes item
         event.stopPropagation();
 
-        // returns all the notes except the one selected for deletion
-        const updatedNotes = notes.filter(
-            (note) => note.id !== noteId
-        )
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/notes/${noteId}`,
+                {
+                    method: "DELETE",
+                }
+            );
 
-        setNotes(updatedNotes);
+            // returns all the notes except the one selected for deletion
+            const updatedNotes = notes.filter(
+                (note) => note.id !== noteId
+            )
+
+            setNotes(updatedNotes);
+
+        } catch (e) {
+            console.log(e);
+        }
+
+
     };
 
 
