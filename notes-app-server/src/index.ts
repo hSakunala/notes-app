@@ -48,8 +48,42 @@ app.post("/api/notes", async (req, res) => {
         res
             .status(500)
             .send("Oops something went wrong");
+    };
+});
+
+// endpoint to update a note, specify the id with ':'
+app.put("/api/notes/:id", async (req, res) => {
+    const { title, content } = req.body;
+    const id = parseInt(req.params.id) // get the id from the query parameter and parse as int
+
+    if (!title || !content) {
+        res
+            .status(400) // status 400 indicates error
+            .send("title and content fields required");
+        return;
+    };
+
+    if (!id || isNaN(id)) {
+        res
+            .status(400)
+            .send("ID must be a valid number");
+        return;
+    };
+
+    // try to update the note with the selected id and catch errors
+    try {
+        const updatedNote = await prisma.note.update({
+            where: { id },
+            data: { title, content }
+        });
+        res.json(updatedNote);
+    } catch (error) {
+        res
+            .status(500)
+            .send("Oops, something went wrong");
+        return;
     }
-})
+});
 
 app.listen(5000, () => {
     console.log("server running on localhost:5000")
