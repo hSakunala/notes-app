@@ -74,37 +74,55 @@ const App = () => {
         } catch (e) {
             console.log(e);
         };
-
-
     };
 
 
-    const handleUpdateNote = (event: React.FormEvent) => {
+    const handleUpdateNote = async (
+        event: React.FormEvent
+    ) => {
         event.preventDefault();
 
         if (!selectedNote) {
             return;
         }
 
-        const updatedNote: Note = {
-            id: selectedNote.id,
-            title: title,
-            content: content,
+        try {
+            const response = await fetch(
+                // get and update the note with the selected ID from db
+                `http://localhost:5000/api/notes/${selectedNote.id}`,
+                {
+                    method: "PUT",
+                    headers: {   // have to specify the data we are sending is 
+                        // json through header content type
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content
+                    })
+                }
+            );
+
+            const updatedNote = await response.json();
+
+            // as the map funciton iterates over the notes
+            // it will check to see if the iterated note is the one the user selected
+            // then it will return the updatedNote, else it will return the original note
+            const updatedNotesList = notes.map((note) =>
+                note.id === selectedNote.id
+                    ? updatedNote
+                    : note
+            )
+
+            setNotes(updatedNotesList)
+            setTitle("")
+            setContent("")
+            setSelectedNote(null);
+        } catch (e) {
+            console.log(e);
         }
 
-        // as the map funciton iterates over the notes
-        // it will check to see if the iterated note is the one the user selected
-        // then it will return the updatedNote, else it will return the original note
-        const updatedNotesList = notes.map((note) =>
-            note.id === selectedNote.id
-                ? updatedNote
-                : note
-        )
 
-        setNotes(updatedNotesList)
-        setTitle("")
-        setContent("")
-        setSelectedNote(null);
     };
 
 
