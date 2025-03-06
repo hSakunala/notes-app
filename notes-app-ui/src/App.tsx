@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css"
 import { eventNames } from "process";
 
@@ -9,34 +9,32 @@ type Note = {
 }
 
 const App = () => {
-    const [notes, setNotes] = useState<Note[]>([
-        {
-            id: 1,
-            title: "note title 1",
-            content: "content 1"
-        },
-        {
-            id: 2,
-            title: "note title 2",
-            content: "content 2"
-        },
-        {
-            id: 3,
-            title: "note title 3",
-            content: "content 3"
-        },
-        {
-            id: 4,
-            title: "note title 4",
-            content: "content 4"
-        },
-    ]);
+    const [notes, setNotes] = useState<Note[]>([]);
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 
     const [selectedNote, setSelectedNote] =
         useState<Note | null>(null);
+
+    // put the async func in its own function becuase 
+    // react doesnt like the useEffect being async
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                // get fetch is an automatic get request from server
+                const response =
+                    await fetch("http://localhost:5000/api/notes");
+                // convert the data to json and put the date in a note type array
+                const notes: Note[] = await response.json();
+                setNotes(notes);
+            } catch (e) {
+                console.log(e)
+            };
+        };
+        // call the function to use the fetch and get data
+        fetchNotes();
+    }, []); // add dependency array 
 
     const handleNoteClick = (note: Note) => {
         setSelectedNote(note);
