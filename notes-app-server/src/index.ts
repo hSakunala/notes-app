@@ -22,6 +22,34 @@ app.get("/api/notes", async (req, res) => {
     res.json(notes);
 });
 
+// endpoint to create a note
+app.post("/api/notes", async (req, res) => {
+    const { title, content } = req.body;
+
+    // Error handeling for empty title or content
+    if (!title || !content) {
+        res
+            .status(400) // status 400 indicates error
+            .send("title and content fields required");
+        return;
+    };
+
+    try {
+
+        // call prisma client and use create func to create new note
+        const note = await prisma.note.create({
+            data: { title, content }
+        })
+
+        // return note as json
+        res.json(note);
+
+    } catch (error) {
+        res
+            .status(500)
+            .send("Oops something went wrong");
+    }
+})
 
 app.listen(5000, () => {
     console.log("server running on localhost:5000")
